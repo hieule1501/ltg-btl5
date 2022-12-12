@@ -10,6 +10,7 @@ public class EnemyHealth : MonoBehaviour
     public int scoreValue = 10;
     public AudioClip deathClip;
 
+    public SharedInt sharedHp;
 
     Animator anim;
     AudioSource enemyAudio;
@@ -31,36 +32,35 @@ public class EnemyHealth : MonoBehaviour
     private void Start()
     {
         behaviorTree = GetComponent<BehaviorTree>();
-        
+        SetHPVariable(currentHealth);
     }
 
     void Update ()
     {
-        if(isSinking)
+        if (isSinking)
         {
             transform.Translate (-Vector3.up * sinkSpeed * Time.deltaTime);
         }
     }
 
 
-    public void TakeDamage (int amount, Vector3 hitPoint)
+    public void TakeDamage(int amount, Vector3 hitPoint)
     {
-        if(isDead)
-            return;
+        if (isDead) return;
 
         enemyAudio.Play ();
 
         currentHealth -= amount;
-            
+        SetHPVariable(currentHealth);
+
         hitParticles.transform.position = hitPoint;
         hitParticles.Play();
 
-        if(currentHealth <= 0)
+        if (currentHealth <= 0)
         {
             Death ();
         }
     }
-
 
     void Death ()
     {
@@ -74,7 +74,6 @@ public class EnemyHealth : MonoBehaviour
         enemyAudio.Play ();
     }
 
-
     public void StartSinking ()
     {
         GetComponent <UnityEngine.AI.NavMeshAgent> ().enabled = false;
@@ -83,4 +82,11 @@ public class EnemyHealth : MonoBehaviour
         ScoreManager.score += scoreValue;
         Destroy (gameObject, 2f);
     }
+
+    void SetHPVariable(int hp)
+    {
+        sharedHp.Value = hp;
+        behaviorTree.SetVariable("HP", sharedHp);
+    }
+        
 }

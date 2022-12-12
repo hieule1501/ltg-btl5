@@ -9,7 +9,6 @@ public class EnemyAttack : MonoBehaviour
     public int attackDamage = 10;
 
     public SharedGameObject sharedGameObject;
-    public SharedFloat sharedSpeed;
 
     GameObject player;
     Animator anim;
@@ -31,7 +30,6 @@ public class EnemyAttack : MonoBehaviour
         sharedGameObject.Value = player;
         behaviorTree.SetVariable("Target", sharedGameObject);
         behaviorTree.RegisterEvent("AttackPlayer", Attack);
-        behaviorTree.RegisterEvent<float>("SetSpeed", SetSpeed);
     }
 
     void Update()
@@ -48,11 +46,5 @@ public class EnemyAttack : MonoBehaviour
         {
             playerHealth.TakeDamage(attackDamage);
         }
-    }
-
-    void SetSpeed(float speed)
-    {
-        sharedSpeed.Value = speed;
-        behaviorTree.SetVariable("MovingSpeed", sharedSpeed);
     }
 }
