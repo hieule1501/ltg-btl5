@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using BehaviorDesigner.Runtime;
 using BehaviorDesigner.Runtime.Tasks;
+using DG.Tweening;
 
 public class EnemyHealth : MonoBehaviour
 {
@@ -19,6 +20,7 @@ public class EnemyHealth : MonoBehaviour
     bool isDead;
     bool isSinking;
     BehaviorTree behaviorTree;
+    bool hasUpgradeHp;
 
     void Awake ()
     {
@@ -32,7 +34,9 @@ public class EnemyHealth : MonoBehaviour
     private void Start()
     {
         behaviorTree = GetComponent<BehaviorTree>();
+        behaviorTree.RegisterEvent("UpgradeHP", UpgradeHp);
         SetHPVariable(currentHealth);
+        hasUpgradeHp = false;
     }
 
     void Update ()
@@ -87,6 +91,18 @@ public class EnemyHealth : MonoBehaviour
     {
         sharedHp.Value = hp;
         behaviorTree.SetVariable("HP", sharedHp);
+    }
+
+    void UpgradeHp()
+    {
+        if (!hasUpgradeHp)
+        {
+            transform.DOScale(Vector3.one * 2f, 2f);
+            currentHealth += 200;
+            SetHPVariable(currentHealth);
+            hasUpgradeHp = true;
+        }
+        
     }
         
 }

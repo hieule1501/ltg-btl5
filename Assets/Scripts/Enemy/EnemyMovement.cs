@@ -1,25 +1,39 @@
 ﻿using UnityEngine;
 using System.Collections;
+using BehaviorDesigner.Runtime;
 
 public class EnemyMovement : MonoBehaviour
 {
-    Transform player;
-    PlayerHealth playerHealth;
-    EnemyHealth enemyHealth;
-    UnityEngine.AI.NavMeshAgent nav;
+    public float speed = 6f;
 
+    Transform player;
+
+    BehaviorTree behaviorTree;
+    public SharedFloat sharedSpeed;
+    bool hasUpgradeSpeed;
 
     void Awake ()
     {
         player = GameObject.FindGameObjectWithTag ("Player").transform;
-        playerHealth = player.GetComponent <PlayerHealth> ();
-        enemyHealth = GetComponent <EnemyHealth> ();
-        nav = GetComponent <UnityEngine.AI.NavMeshAgent> ();
     }
 
-
-    void Update ()
+    private void Start()
     {
+        behaviorTree = GetComponent<BehaviorTree>();
+        sharedSpeed.Value = speed;
+        behaviorTree.SetVariable("MovingSpeed", sharedSpeed);
+        behaviorTree.RegisterEvent("UpgradeSpeed", UpgradeSpeed);
+        hasUpgradeSpeed = false;
+    }
+
+    void UpgradeSpeed()
+    {
+        if (!hasUpgradeSpeed)
+        {
+            sharedSpeed.Value = speed * 2f;
+            behaviorTree.SetVariable("MovingSpeed", sharedSpeed);
+            hasUpgradeSpeed = true;
+        }
 
     }
 }

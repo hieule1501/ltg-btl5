@@ -9,12 +9,15 @@ public class EnemyAttack : MonoBehaviour
     public int attackDamage = 10;
 
     public SharedGameObject sharedGameObject;
+    public SharedInt sharedAttackDamage;
+
 
     GameObject player;
     Animator anim;
     PlayerHealth playerHealth;
     EnemyHealth enemyHealth;
     BehaviorTree behaviorTree;
+    bool hasUpgradeAttack;
 
     void Awake ()
     {
@@ -26,10 +29,12 @@ public class EnemyAttack : MonoBehaviour
 
     private void Start()
     {
+        hasUpgradeAttack = false;
         behaviorTree = GetComponent<BehaviorTree>();
         sharedGameObject.Value = player;
         behaviorTree.SetVariable("Target", sharedGameObject);
         behaviorTree.RegisterEvent("AttackPlayer", Attack);
+        behaviorTree.RegisterEvent("UpgradeAttack", UpgradeAttack);
     }
 
     void Update()
@@ -47,4 +52,13 @@ public class EnemyAttack : MonoBehaviour
             playerHealth.TakeDamage(attackDamage);
         }
     }
+
+    void UpgradeAttack()
+    {
+        if (!hasUpgradeAttack)
+        {
+            attackDamage = attackDamage + 10;
+            behaviorTree.SetVariable("AttackDamage", sharedAttackDamage);
+        }
+    }    
 }
