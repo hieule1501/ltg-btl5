@@ -24,7 +24,7 @@ public class EnemyAttack : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
         playerHealth = player.GetComponent <PlayerHealth> ();
         enemyHealth = GetComponent<EnemyHealth>();
-        anim = GetComponent <Animator> ();   
+        anim = GetComponent <Animator> ();
     }
 
     private void Start()
@@ -58,6 +58,7 @@ public class EnemyAttack : MonoBehaviour
         if (!hasUpgradeAttack)
         {
             attackDamage = attackDamage + 10;
+            hasUpgradeAttack = true;
             behaviorTree.SetVariable("AttackDamage", sharedAttackDamage);
         }
     }    

@@ -11,10 +11,12 @@ public class EnemyMovement : MonoBehaviour
     BehaviorTree behaviorTree;
     public SharedFloat sharedSpeed;
     bool hasUpgradeSpeed;
+    EnemyEffect enemyEffect;
 
     void Awake ()
     {
         player = GameObject.FindGameObjectWithTag ("Player").transform;
+        enemyEffect = GetComponent<EnemyEffect>();
     }
 
     private void Start()
@@ -30,6 +32,8 @@ public class EnemyMovement : MonoBehaviour
     {
         if (!hasUpgradeSpeed)
         {
+            enemyEffect.PlayUpgradeEffect();
+            enemyEffect.EnableUpgradeAura();
             sharedSpeed.Value = speed * 2f;
             behaviorTree.SetVariable("MovingSpeed", sharedSpeed);
             hasUpgradeSpeed = true;

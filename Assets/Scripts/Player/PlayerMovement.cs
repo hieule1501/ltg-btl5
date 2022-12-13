@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 public class PlayerMovement : MonoBehaviour {
 	public float speed = 6f;            // The speed that the player will move at.
@@ -9,7 +10,8 @@ public class PlayerMovement : MonoBehaviour {
 	
 	int floorMask;                      // A layer mask so that a ray can be cast just at gameobjects on the floor layer.
 	float camRayLength = 100f;          // The length of the ray from the camera into the scene.
-
+	PlayerEffect playerEffect;
+	public bool IsSuper;
 
 	void Awake () {
 		// Create a layer mask for the floor layer.
@@ -18,6 +20,8 @@ public class PlayerMovement : MonoBehaviour {
 		// Set up references.
 		anim = GetComponent <Animator> ();
 		playerRigidbody = GetComponent <Rigidbody> ();
+		playerEffect = GetComponent<PlayerEffect>();
+		IsSuper = false;
 	}
 	
 	
@@ -80,4 +84,27 @@ public class PlayerMovement : MonoBehaviour {
 		// Tell the animator whether or not the player is walking.
 		anim.SetBool ("IsWalking", walking);
 	}
+
+	public void UpgradeSpeed() 
+	{
+		speed += 1;
+		playerEffect.PlayUpgradeSpeed();
+		if (speed > 20) speed = 20;
+	}
+
+	public void SuperUpgradeSpeed()
+    {
+		StartCoroutine(IEUpgradeSuperSpeed());
+    }
+
+	IEnumerator IEUpgradeSuperSpeed()
+    {
+		float tempSpeed = speed;
+		speed = 20f;
+		IsSuper = true;
+		yield return new WaitForSeconds(5f);
+		speed = tempSpeed;
+		IsSuper = false;
+    }
+		
 }

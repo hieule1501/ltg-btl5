@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 public class PlayerShooting : MonoBehaviour
 {
+    [SerializeField] PlayerEffect playerEffect;
+
     public int damagePerShot = 20;
     public float timeBetweenBullets = 0.15f;
     public float range = 100f;
-
+    public bool IsSuper;
 
     float timer;
     Ray shootRay;
@@ -25,6 +28,7 @@ public class PlayerShooting : MonoBehaviour
         gunLine = GetComponent <LineRenderer> ();
         gunAudio = GetComponent<AudioSource> ();
         gunLight = GetComponent<Light> ();
+        IsSuper = false;
     }
 
 
@@ -82,4 +86,37 @@ public class PlayerShooting : MonoBehaviour
             gunLine.SetPosition (1, shootRay.origin + shootRay.direction * range);
         }
     }
+
+    public void UpgradeAttack()
+    {
+        damagePerShot += 2;
+        playerEffect.PlayUpgradeAttack();
+        if (damagePerShot > 50) damagePerShot = 50;
+    }
+    
+    public void UpgradeAttackSpeed()
+    {
+        timeBetweenBullets -= 0.01f;
+        playerEffect.PlayUpgradeAtkSpeed();
+        if (timeBetweenBullets < 0.05) timeBetweenBullets = 0.05f;
+    }
+
+    public void UpgradeSuper()
+    {
+        StartCoroutine(IEUpgradeSuper());
+    }
+
+    IEnumerator IEUpgradeSuper()
+    {
+        int tempDamage = damagePerShot;
+        float tempAtkSpd = timeBetweenBullets;
+        damagePerShot = 50;
+        timeBetweenBullets = 0.05f;
+        IsSuper = true;
+        yield return new WaitForSeconds(5f);
+        damagePerShot = tempDamage;
+        timeBetweenBullets = tempAtkSpd;
+        IsSuper = false;
+    }
+        
 }

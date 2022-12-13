@@ -21,6 +21,7 @@ public class EnemyHealth : MonoBehaviour
     bool isSinking;
     BehaviorTree behaviorTree;
     bool hasUpgradeHp;
+    EnemyEffect enemyEffect;
 
     void Awake ()
     {
@@ -28,6 +29,7 @@ public class EnemyHealth : MonoBehaviour
         enemyAudio = GetComponent <AudioSource> ();
         hitParticles = GetComponentInChildren <ParticleSystem> ();
         capsuleCollider = GetComponent<CapsuleCollider>();
+        enemyEffect = GetComponent<EnemyEffect>();
         currentHealth = startingHealth;
     }
 
@@ -80,10 +82,12 @@ public class EnemyHealth : MonoBehaviour
 
     public void StartSinking ()
     {
+        behaviorTree.enabled = false;
         GetComponent <UnityEngine.AI.NavMeshAgent> ().enabled = false;
         GetComponent <Rigidbody> ().isKinematic = true;
         isSinking = true;
         ScoreManager.score += scoreValue;
+        enemyEffect.OnDie();
         Destroy (gameObject, 2f);
     }
 
@@ -101,6 +105,8 @@ public class EnemyHealth : MonoBehaviour
             currentHealth += 200;
             SetHPVariable(currentHealth);
             hasUpgradeHp = true;
+            enemyEffect.PlayUpgradeEffect();
+            enemyEffect.EnableUpgradeAura();
         }
         
     }
